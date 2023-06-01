@@ -13,6 +13,10 @@ import {ConfirmedOwner} from "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   using Functions for Functions.Request;
 
+  uint256 public highPrediction;
+  uint256 public lowPrediction;
+  uint256 public closePrediction;
+
   bytes32 public latestRequestId;
   bytes public latestResponse;
   bytes public latestError;
@@ -68,6 +72,7 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
   function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
     latestResponse = response;
     latestError = err;
+    (highPrediction, lowPrediction, closePrediction) = abi.decode(response, (uint256, uint256, uint256));
     emit OCRResponse(requestId, response, err);
   }
 
